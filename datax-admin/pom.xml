@@ -208,6 +208,12 @@
             <version>${mongo-java-driver.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.yoozoo.notice.client</groupId>
+            <artifactId>notice-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

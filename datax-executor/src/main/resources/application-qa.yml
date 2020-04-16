@@ -17,7 +17,7 @@ datax:
       ### job log retention days
       logretentiondays: 30
     ### job, access token
-    accessToken: I09I0ZlewDhOmo
+    accessToken: 9I0ZlewDhOmo
 
   executor:
     jsonpath: /data/app/datax-job/

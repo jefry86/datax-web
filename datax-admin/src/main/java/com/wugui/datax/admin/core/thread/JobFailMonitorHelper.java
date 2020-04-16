@@ -189,34 +189,52 @@ public class JobFailMonitorHelper {
             String smsContent = "任务ID:" + info.getId() + "，任务描述:" + info.getJobDesc() + "，执行失败了，具体详细查看邮件。";
             String[] authors = info.getAuthor().split(",");
             List<JobUser> listUsers = JobAdminConfig.getAdminConfig().getJobUserMapper().getUsersByIds(authors);
-//            List<String> userNameList = new ArrayList<>();
-//            listUsers.forEach(user -> {
-//                userNameList.add(user.getUsername());
-//            });
-
-
+            List<String> userNameList = new ArrayList<>();
             listUsers.forEach(user -> {
-                        // make mail
-                        try {
-                            MimeMessage mimeMessage = JobAdminConfig.getAdminConfig().getMailSender().createMimeMessage();
-
-                            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                            helper.setFrom(JobAdminConfig.getAdminConfig().getEmailUserName(), personal);
-                            helper.setTo(user.getEmail());
-                            helper.setSubject(title);
-                            helper.setText(content, true);
-
-                            JobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
-                        } catch (Exception e) {
-                            logger.error(">>>>>>>>>>> datax-web, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
-
-                        }
-                        //make sms user.getPhone()
-                    }
-
-            );
+                userNameList.add(user.getUsername());
+            });
 
 
+//            listUsers.forEach(user -> {
+//                        // make mail
+//                        try {
+//                            MimeMessage mimeMessage = JobAdminConfig.getAdminConfig().getMailSender().createMimeMessage();
+//
+//                            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+//                            helper.setFrom(JobAdminConfig.getAdminConfig().getEmailUserName(), personal);
+//                            helper.setTo(user.getEmail());
+//                            helper.setSubject(title);
+//                            helper.setText(content, true);
+//
+//                            JobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
+//                        } catch (Exception e) {
+//                            logger.error(">>>>>>>>>>> datax-web, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
+//
+//                        }
+//                        //make sms user.getPhone()
+//                    }
+//
+//            );
+
+            MailReq mailReq = new MailReq();
+            mailReq.setContent(content);
+            mailReq.setSubject(title);
+            mailReq.setTo(userNameList);
+            mailReq.setType(0);
+            CommonRes mailCommonRes = JobAdminConfig.getAdminConfig().getNoticeClient().sendMail(mailReq);
+            if (!mailCommonRes.isOk()) {
+                logger.error(">>>>>>>>>>> datax-web, job fail alarm email send error, JobLogId:{},err:{}", jobLog.getId(), mailCommonRes.getMessage());
+            }
+
+            SmsReq smsReq = new SmsReq();
+            smsReq.setContent(smsContent);
+            smsReq.setTo(userNameList);
+            smsReq.setType(0);
+            CommonRes smsCommonRes = JobAdminConfig.getAdminConfig().getNoticeClient().sendSms(smsReq);
+
+            if (!smsCommonRes.isOk()) {
+                logger.error(">>>>>>>>>>> datax-web, job fail alarm sms send error, JobLogId:{},err:{}", jobLog.getId(), smsCommonRes.getMessage());
+            }
 
 
         }
