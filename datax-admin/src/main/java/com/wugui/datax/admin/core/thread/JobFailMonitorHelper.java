@@ -186,7 +186,7 @@ public class JobFailMonitorHelper {
                     group != null ? group.getTitle() : "null",
                     alarmContent);
 
-            String smsContent = "任务ID:" + info.getId() + "，任务描述:" + info.getJobDesc() + "，执行失败了，具体详细查看邮件。";
+            String smsContent = "经管大数据项目-任务调试失败，ID:" + info.getId() + "，名称:" + info.getJobDesc() + "，详细查看邮件。";
             String[] authors = info.getAuthor().split(",");
             List<JobUser> listUsers = JobAdminConfig.getAdminConfig().getJobUserMapper().getUsersByIds(authors);
             List<String> userNameList = new ArrayList<>();
