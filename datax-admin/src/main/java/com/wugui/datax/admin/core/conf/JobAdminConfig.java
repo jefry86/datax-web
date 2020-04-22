@@ -2,6 +2,7 @@ package com.wugui.datax.admin.core.conf;
 
 import com.wugui.datax.admin.core.scheduler.JobScheduler;
 import com.wugui.datax.admin.mapper.*;
+import com.yoozoo.notice.client.NoticeClient;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
         return adminConfig;
     }
 
+    @Autowired
+    private NoticeClient noticeClient;
 
     // ---------------------- XxlJobScheduler ----------------------
 
@@ -87,8 +90,6 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
     @Resource
     private JobUserMapper jobUserMapper;
 
-
-
     public String getI18n() {
         return i18n;
     }
@@ -143,5 +144,9 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
 
     public JobUserMapper getJobUserMapper(){
         return jobUserMapper;
+    }
+
+    public NoticeClient getNoticeClient() {
+        return noticeClient;
     }
 }
