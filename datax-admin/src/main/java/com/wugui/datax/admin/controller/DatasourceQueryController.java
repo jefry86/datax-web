@@ -84,7 +84,7 @@ public class DatasourceQueryController extends ApiController {
      * @param querySql     表名
      * @return
      */
-    @GetMapping("/getColumnsByQuerySql")
+    @PostMapping("/getColumnsByQuerySql")
     @ApiOperation("根据数据源id和sql语句获取所有字段")
     public R<List<String>> getColumnsByQuerySql(Long datasourceId, String querySql) {
         return success(datasourceQueryService.getColumnsByQuerySql(datasourceId, querySql));

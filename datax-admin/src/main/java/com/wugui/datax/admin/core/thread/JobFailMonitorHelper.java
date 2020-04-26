@@ -11,6 +11,7 @@ import com.wugui.datax.admin.entity.JobUser;
 import com.yoozoo.notice.client.model.MailReq;
 import com.yoozoo.notice.client.model.SmsReq;
 import com.yoozoo.notice.client.model.common.CommonRes;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -184,12 +186,14 @@ public class JobFailMonitorHelper {
                     group != null ? group.getTitle() : "null",
                     alarmContent);
 
-            String smsContent = "经管大数据项目-任务调试失败，ID:" + info.getId() + "，名称:" + info.getJobDesc() + "，详细查看邮件。";
+            String smsContent = "任务调试失败，ID:" + info.getId() + "，名称:" + info.getJobDesc() + "，所属项目:"+info.getJobProject()+"，详细查看邮件";
             String[] authors = info.getAuthor().split(",");
             List<JobUser> listUsers = JobAdminConfig.getAdminConfig().getJobUserMapper().getUsersByIds(authors);
             List<String> userNameList = new ArrayList<>();
+            List<String> mobileList = new ArrayList<>();
             listUsers.forEach(user -> {
                 userNameList.add(user.getUsername());
+                mobileList.add(user.getPhone());
             });
 
 
@@ -224,15 +228,17 @@ public class JobFailMonitorHelper {
                 logger.error(">>>>>>>>>>> datax-web, job fail alarm email send error, JobLogId:{},err:{}", jobLog.getId(), mailCommonRes.getMessage());
             }
 
-            SmsReq smsReq = new SmsReq();
-            smsReq.setContent(smsContent);
-            smsReq.setTo(userNameList);
-            smsReq.setType(0);
-            CommonRes smsCommonRes = JobAdminConfig.getAdminConfig().getNoticeClient().sendSms(smsReq);
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sdfDate = simpleDateFormat.format(date);
 
-            if (!smsCommonRes.isOk()) {
-                logger.error(">>>>>>>>>>> datax-web, job fail alarm sms send error, JobLogId:{},err:{}", jobLog.getId(), smsCommonRes.getMessage());
-            }
+            String contents = new StringBuffer()
+                    .append(smsContent)
+                    .append(" - ")
+                    .append(sdfDate)
+                    .toString();
+            JobAdminConfig.getAdminConfig().getDingdingAlarm().send(StringUtils.join(userNameList,","), contents);
+            JobAdminConfig.getAdminConfig().getSmsAlarm().send(StringUtils.join(mobileList, ","), contents);
 
 
         }

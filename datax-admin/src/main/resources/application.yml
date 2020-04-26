@@ -82,6 +82,14 @@ yoozoo:
     base-url: http://notice.uuzu.com
     api-key: kqYzSh=vJ*brWKUwcGV2e+0xs!5LTR
     username: tianly
+  title: 经营管理大数据告警
+  dingding:
+    app-id: 21
+    app-key: xUliR9LrVHAmQN3ESJYmuPXt6kEoouW2
+    url: http://10.6.176.119:8080/index.html
+  sms:
+    app-id: Noomj3Vcxa
+    app-key: EADpRjQz1t21LF52mQ
 
 swagger:
   enabled: true

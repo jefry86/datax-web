@@ -150,6 +150,11 @@
             <artifactId>datax-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.yoozoo.jefry</groupId>
+            <artifactId>notification</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

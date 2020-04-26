@@ -58,4 +58,7 @@ public class JobLog {
 	@ApiModelProperty("DataX进程Id")
 	private String processId;
 
+	@ApiModelProperty("expendTime")
+	private String expendTime;
+
 }

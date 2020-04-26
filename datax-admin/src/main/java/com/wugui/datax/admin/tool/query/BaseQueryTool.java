@@ -56,24 +56,24 @@ public abstract class BaseQueryTool implements QueryToolInterface {
      * @param jobDatasource
      */
     BaseQueryTool(JobDatasource jobDatasource) throws SQLException {
-            if (LocalCacheUtil.get(jobDatasource.getDatasourceName()) == null) {
+        if (LocalCacheUtil.get(jobDatasource.getDatasourceName()) == null) {
+            getDataSource(jobDatasource);
+        } else {
+            this.connection = (Connection) LocalCacheUtil.get(jobDatasource.getDatasourceName());
+            if (!this.connection.isValid(500)) {
+                LocalCacheUtil.remove(jobDatasource.getDatasourceName());
                 getDataSource(jobDatasource);
-            } else {
-                this.connection = (Connection) LocalCacheUtil.get(jobDatasource.getDatasourceName());
-                if(!this.connection.isValid(500)){
-                    LocalCacheUtil.remove(jobDatasource.getDatasourceName());
-                    getDataSource(jobDatasource);
-                }
             }
-            sqlBuilder = DatabaseMetaFactory.getByDbType(jobDatasource.getDatasource());
-            currentSchema = getSchema(jobDatasource.getJdbcUsername());
-            LocalCacheUtil.set(jobDatasource.getDatasourceName(), this.connection, 4 * 60 * 60 * 1000);
         }
+        sqlBuilder = DatabaseMetaFactory.getByDbType(jobDatasource.getDatasource());
+        currentSchema = getSchema(jobDatasource.getJdbcUsername());
+        LocalCacheUtil.set(jobDatasource.getDatasourceName(), this.connection, 4 * 60 * 60 * 1000);
+    }
 
     private void getDataSource(JobDatasource jobDatasource) throws SQLException {
-            String userName = AESUtil.decrypt(jobDatasource.getJdbcUsername());
+        String userName = AESUtil.decrypt(jobDatasource.getJdbcUsername());
 
-            //这里默认使用 hikari 数据源
+        //这里默认使用 hikari 数据源
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setUsername(userName);
         dataSource.setPassword(AESUtil.decrypt(jobDatasource.getJdbcPassword()));
@@ -355,7 +355,7 @@ public abstract class BaseQueryTool implements QueryToolInterface {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            //拼装sql语句，在后面加上 where 1=0 即可
+           /* //拼装sql语句，在后面加上 where 1=0 即可
             String sql = querySql.concat(" where 1=0");
             //判断是否已有where，如果是，则加 and 1=0
             //从最后一个 ) 开始找 where，或者整个语句找
@@ -367,7 +367,11 @@ public abstract class BaseQueryTool implements QueryToolInterface {
                 if (querySql.contains("where")) {
                     sql = querySql.concat(" and 1=0");
                 }
-            }
+            }*/
+
+            String sql = querySql.concat("limit 1");
+
+
             //获取所有字段
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);

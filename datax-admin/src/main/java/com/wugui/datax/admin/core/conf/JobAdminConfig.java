@@ -1,5 +1,7 @@
 package com.wugui.datax.admin.core.conf;
 
+import com.wugui.datax.admin.core.alarm.DingdingAlarm;
+import com.wugui.datax.admin.core.alarm.SmsAlarm;
 import com.wugui.datax.admin.core.scheduler.JobScheduler;
 import com.wugui.datax.admin.mapper.*;
 import com.yoozoo.notice.client.NoticeClient;
@@ -30,6 +32,13 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
 
     @Autowired
     private NoticeClient noticeClient;
+
+
+    @Autowired
+    private SmsAlarm smsAlarm;
+
+    @Autowired
+    private DingdingAlarm dingdingAlarm;
 
     // ---------------------- XxlJobScheduler ----------------------
 
@@ -148,5 +157,13 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
 
     public NoticeClient getNoticeClient() {
         return noticeClient;
+    }
+
+    public SmsAlarm getSmsAlarm() {
+        return smsAlarm;
+    }
+
+    public DingdingAlarm getDingdingAlarm() {
+        return dingdingAlarm;
     }
 }

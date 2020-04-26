@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "yoozoo.title",
+      "type": "java.lang.String",
+      "description": "Description for yoozoo.title."
+  }
+] }
