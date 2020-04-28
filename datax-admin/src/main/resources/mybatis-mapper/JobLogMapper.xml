@@ -26,6 +26,7 @@
 		<result column="alarm_status" property="alarmStatus" />
 
 		<result column="process_id" property="processId" />
+		<result column="exp_time" property="expTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -44,7 +45,8 @@
 		t.handle_code,
 		t.handle_msg,
 		t.alarm_status,
-		t.process_id
+		t.process_id,
+		t.exp_time
 	</sql>
 	
 	<select id="pageList" resultMap="JobLog">
@@ -158,7 +160,8 @@
 		SET 
 			`handle_time`= #{handleTime}, 
 			`handle_code`= #{handleCode},
-			`handle_msg`= #{handleMsg} 
+			`handle_msg`= #{handleMsg},
+			`exp_time`=#{expTime}
 		WHERE `id`= #{id}
 	</update>
 

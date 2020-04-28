@@ -14,7 +14,7 @@ import java.util.Date;
 public class JobLog {
 
 	private long id;
-	
+
 	// job info
 	@ApiModelProperty("执行器主键ID")
 	private int jobGroup;
@@ -32,7 +32,7 @@ public class JobLog {
 	private String executorShardingParam;
 	@ApiModelProperty("失败重试次数")
 	private int executorFailRetryCount;
-	
+
 	// trigger info
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty("调度-时间")
@@ -41,7 +41,7 @@ public class JobLog {
 	private int triggerCode;
 	@ApiModelProperty("调度-日志")
 	private String triggerMsg;
-	
+
 	// handle info
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty("执行-时间")
@@ -50,6 +50,8 @@ public class JobLog {
 	private int handleCode;
 	@ApiModelProperty("执行-日志")
 	private String handleMsg;
+
+	private Long expTime;
 
 	// alarm info
 	@ApiModelProperty("告警状态：0-默认、1-无需告警、2-告警成功、3-告警失败")

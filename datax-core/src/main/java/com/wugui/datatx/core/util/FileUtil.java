@@ -1,12 +1,10 @@
 package com.wugui.datatx.core.util;
 
+import com.wugui.datatx.core.log.JobLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * file tool
@@ -176,4 +174,25 @@ public class FileUtil {
         return result;
     }*/
 
+    /**
+     * 数据流reader（Input自动关闭，Output不处理）
+     *
+     * @param inputStream
+     * @throws IOException
+     */
+    public static void reader(InputStream inputStream, String std) throws IOException {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                JobLogger.log("------------------" + std + "\n\t" + line);
+            }
+            reader.close();
+            inputStream = null;
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
 }

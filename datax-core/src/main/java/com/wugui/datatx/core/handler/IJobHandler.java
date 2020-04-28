@@ -15,13 +15,15 @@ public abstract class IJobHandler {
 
 
 	/** success */
-	public static final ReturnT<String> SUCCESS = new ReturnT<>(200, null);
+	public static final ReturnT<String> SUCCESS = new ReturnT<>(200, "success");
 	/** fail */
-	public static final ReturnT<String> FAIL = new ReturnT<>(500, null);
+	public static final ReturnT<String> FAIL = new ReturnT<>(500, "fail");
 	/** fail timeout */
-	public static final ReturnT<String> FAIL_TIMEOUT = new ReturnT<>(502, null);
+	public static final ReturnT<String> FAIL_TIMEOUT = new ReturnT<>(502, "timeout");
 
 	public static final ConcurrentMap<String, String> jobTmpFiles = new ConcurrentHashMap<>();
+
+	public Long expTime;
 	/**
 	 * execute handler, invoked when executor receives a scheduling request
 	 *

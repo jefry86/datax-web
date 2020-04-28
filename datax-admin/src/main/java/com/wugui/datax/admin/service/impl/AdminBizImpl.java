@@ -72,6 +72,7 @@ public class AdminBizImpl implements AdminBiz {
         if (log == null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "log item not found.");
         }
+
         if (log.getHandleCode() > 0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
         }
@@ -132,6 +133,7 @@ public class AdminBizImpl implements AdminBiz {
         log.setHandleTime(new Date());
         log.setHandleCode(resultCode);
         log.setHandleMsg(handleMsg.toString());
+        log.setExpTime(handleCallbackParam.getExpTime());
         jobLogMapper.updateHandleInfo(log);
         jobInfoMapper.updateLastHandleCode(log.getJobId(), resultCode);
 
