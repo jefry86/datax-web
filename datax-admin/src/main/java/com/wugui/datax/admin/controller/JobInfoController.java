@@ -9,9 +9,14 @@ import com.wugui.datax.admin.core.trigger.TriggerTypeEnum;
 import com.wugui.datax.admin.core.util.I18nUtil;
 import com.wugui.datax.admin.dto.TriggerJobDto;
 import com.wugui.datax.admin.entity.JobInfo;
+import com.wugui.datax.admin.entity.JobUser;
+import com.wugui.datax.admin.entity.JwtUser;
 import com.wugui.datax.admin.service.JobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,25 +39,26 @@ public class JobInfoController {
     @Resource
     private JobService jobService;
 
-
     @GetMapping("/pageList")
     @ApiOperation("任务列表")
     public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "0") int current,
-                                        @RequestParam(required = false, defaultValue = "10") int size,
-                                        int jobGroup, int triggerStatus, String jobDesc, String glueType, String author, String jobProject) {
-
-        return new ReturnT<>(jobService.pageList((current-1)*size, size, jobGroup, triggerStatus, jobDesc, glueType, author, jobProject));
+                                                 @RequestParam(required = false, defaultValue = "10") int size,
+                                                 int jobGroup, int triggerStatus, String jobDesc, String glueType, String author, String jobProject) {
+        return new ReturnT<>(jobService.pageList((current - 1) * size, size, jobGroup, triggerStatus, jobDesc, glueType, author, jobProject));
     }
 
     @GetMapping("/list")
-    public ReturnT<List<Object>> list(){
-        return new ReturnT<>(jobService.list());
+    public ReturnT<List<Object>> list(Authentication authentication) {
+        String id = (String) authentication.getCredentials();
+        int permissionId = JobUser.getPermissionId(id);
+        return new ReturnT<>(jobService.list(permissionId));
     }
 
     @GetMapping("/projects")
-    public ReturnT<List<Object>> projects(){
+    public ReturnT<List<Object>> projects() {
         return new ReturnT<>(jobService.projects());
     }
+
     @PostMapping("/add")
     @ApiOperation("添加任务")
     public ReturnT<String> add(@RequestBody JobInfo jobInfo) {
@@ -71,13 +77,13 @@ public class JobInfoController {
         return jobService.remove(id);
     }
 
-    @RequestMapping(value = "/stop",method = RequestMethod.POST)
+    @RequestMapping(value = "/stop", method = RequestMethod.POST)
     @ApiOperation("停止任务")
     public ReturnT<String> pause(int id) {
         return jobService.stop(id);
     }
 
-    @RequestMapping(value = "/start",method = RequestMethod.POST)
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
     @ApiOperation("开启任务")
     public ReturnT<String> start(int id) {
         return jobService.start(id);
@@ -87,7 +93,7 @@ public class JobInfoController {
     @ApiOperation("触发任务")
     public ReturnT<String> triggerJob(@RequestBody TriggerJobDto dto) {
         // force cover job param
-        String executorParam=dto.getExecutorParam();
+        String executorParam = dto.getExecutorParam();
         if (executorParam == null) {
             executorParam = "";
         }

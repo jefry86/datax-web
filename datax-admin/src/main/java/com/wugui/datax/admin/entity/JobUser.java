@@ -51,4 +51,18 @@ public class JobUser {
 
     }
 
+
+    /**
+     * 获取权限ID
+     *
+     * @return
+     */
+    public static int getPermissionId(String id) {
+        if (id.equals("1")) {
+            return 0;
+        } else {
+            return Integer.parseInt(id);
+        }
+    }
+
 }

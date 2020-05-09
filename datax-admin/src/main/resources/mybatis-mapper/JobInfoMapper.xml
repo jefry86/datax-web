@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wugui.datax.admin.mapper.JobInfoMapper">
 
-	<resultMap id="JobProject" type="com.wugui.datax.admin.entity.JobInfo">
-		<result column="job_project" property="jobProject"/>
-	</resultMap>
-	<resultMap id="JobInfo" type="com.wugui.datax.admin.entity.JobInfo" >
-		<result column="id" property="id" />
+    <resultMap id="JobProject" type="com.wugui.datax.admin.entity.JobInfo">
+        <result column="job_project" property="jobProject"/>
+    </resultMap>
+    <resultMap id="JobInfo" type="com.wugui.datax.admin.entity.JobInfo">
+        <result column="id" property="id"/>
 
-		<result column="job_group" property="jobGroup" />
-	    <result column="job_cron" property="jobCron" />
-	    <result column="job_desc" property="jobDesc" />
+        <result column="job_group" property="jobGroup"/>
+        <result column="job_cron" property="jobCron"/>
+        <result column="job_desc" property="jobDesc"/>
 
-	    <result column="add_time" property="addTime" />
-	    <result column="update_time" property="updateTime" />
+        <result column="add_time" property="addTime"/>
+        <result column="update_time" property="updateTime"/>
 
-	    <result column="author" property="author" />
-	    <result column="alarm_email" property="alarmEmail" />
+        <result column="author" property="author"/>
+        <result column="alarm_email" property="alarmEmail"/>
 
-		<result column="executor_route_strategy" property="executorRouteStrategy" />
-		<result column="executor_handler" property="executorHandler" />
-	    <result column="executor_param" property="executorParam" />
-		<result column="executor_block_strategy" property="executorBlockStrategy" />
-		<result column="executor_timeout" property="executorTimeout" />
-		<result column="executor_fail_retry_count" property="executorFailRetryCount" />
+        <result column="executor_route_strategy" property="executorRouteStrategy"/>
+        <result column="executor_handler" property="executorHandler"/>
+        <result column="executor_param" property="executorParam"/>
+        <result column="executor_block_strategy" property="executorBlockStrategy"/>
+        <result column="executor_timeout" property="executorTimeout"/>
+        <result column="executor_fail_retry_count" property="executorFailRetryCount"/>
 
-	    <result column="glue_type" property="glueType" />
-	    <result column="glue_source" property="glueSource" />
-	    <result column="glue_remark" property="glueRemark" />
-		<result column="glue_updatetime" property="glueUpdatetime" />
+        <result column="glue_type" property="glueType"/>
+        <result column="glue_source" property="glueSource"/>
+        <result column="glue_remark" property="glueRemark"/>
+        <result column="glue_updatetime" property="glueUpdatetime"/>
 
-		<result column="child_jobid" property="childJobId" />
-		<result column="parent_jobid" property="parentJobId" />
+        <result column="child_jobid" property="childJobId"/>
+        <result column="parent_jobid" property="parentJobId"/>
 
-		<result column="trigger_status" property="triggerStatus" />
-		<result column="trigger_last_time" property="triggerLastTime" />
-		<result column="trigger_next_time" property="triggerNextTime" />
-		<result column="job_json" property="jobJson" />
+        <result column="trigger_status" property="triggerStatus"/>
+        <result column="trigger_last_time" property="triggerLastTime"/>
+        <result column="trigger_next_time" property="triggerNextTime"/>
+        <result column="job_json" property="jobJson"/>
 
-		<result column="replace_param" property="replaceParam" />
-		<result column="jvm_param" property="jvmParam" />
-		<result column="inc_start_time" property="incStartTime" />
-		<result column="partition_info" property="partitionInfo" />
+        <result column="replace_param" property="replaceParam"/>
+        <result column="jvm_param" property="jvmParam"/>
+        <result column="inc_start_time" property="incStartTime"/>
+        <result column="partition_info" property="partitionInfo"/>
 
-		<result column="last_handle_code" property="lastHandleCode" />
-		<result column="replace_param_type" property="replaceParamType" />
-		<result column="job_project" property="jobProject"/>
-	</resultMap>
+        <result column="last_handle_code" property="lastHandleCode"/>
+        <result column="replace_param_type" property="replaceParamType"/>
+        <result column="job_project" property="jobProject"/>
+    </resultMap>
 
-	<sql id="Base_Column_List">
+    <sql id="Base_Column_List">
 		t.id,
 		t.job_group,
 		t.job_cron,
@@ -83,160 +83,166 @@
 		t.job_project
 	</sql>
 
-	<select id="pageList" parameterType="java.util.HashMap" resultMap="JobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM job_info AS t
-		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobGroup gt 0">
-				AND t.job_group = #{jobGroup}
-			</if>
+    <select id="pageList" parameterType="java.util.HashMap" resultMap="JobInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM job_info AS t
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="jobGroup gt 0">
+                AND t.job_group = #{jobGroup}
+            </if>
             <if test="triggerStatus gte 0">
                 AND t.trigger_status = #{triggerStatus}
             </if>
-			<if test="jobDesc != null and jobDesc != ''">
-				AND t.job_desc like CONCAT(CONCAT('%', #{jobDesc}), '%')
-			</if>
-			<if test="glueType != null and glueType != ''">
-				AND t.glue_type like CONCAT(CONCAT('%', #{glueType}), '%')
-			</if>
-			<if test="authors != null">
-				AND 1=1 AND
-				<foreach collection="authors" index="index" item="author" open="(" close=")" separator=" OR ">
-					FIND_IN_SET(#{author},t.author)
-				</foreach>
-			</if>
-			<if test="jobProjects != null">
-				AND t.job_project IN
-				<foreach collection="jobProjects" item="jobProject" index="index" open="(" close=")" separator=",">
-					#{jobProject}
-				</foreach>
-			</if>
-		</trim>
-		ORDER BY id DESC
-		LIMIT #{offset}, #{pagesize}
-	</select>
+            <if test="jobDesc != null and jobDesc != ''">
+                AND t.job_desc like CONCAT(CONCAT('%', #{jobDesc}), '%')
+            </if>
+            <if test="glueType != null and glueType != ''">
+                AND t.glue_type like CONCAT(CONCAT('%', #{glueType}), '%')
+            </if>
+            <if test="authors != null">
+                AND 1=1 AND
+                <foreach collection="authors" index="index" item="author" open="(" close=")" separator=" OR ">
+                    FIND_IN_SET(#{author},t.author)
+                </foreach>
+            </if>
+            <if test="jobProjects != null">
+                AND t.job_project IN
+                <foreach collection="jobProjects" item="jobProject" index="index" open="(" close=")" separator=",">
+                    #{jobProject}
+                </foreach>
+            </if>
+        </trim>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{pagesize}
+    </select>
 
-	<select id="findAll" parameterType="java.util.HashMap" resultMap="JobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM job_info AS t
-		ORDER BY job_desc ASC
-	</select>
+    <select id="findAll" parameterType="java.util.HashMap" resultMap="JobInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM job_info AS t
+        <if test="permissionId gt 0">
+            WHERE FIND_IN_SET(#{permissionId},author)
+        </if>
+        ORDER BY id ASC
+    </select>
 
-	<select id="projects" parameterType="java.util.HashMap" resultMap="JobProject">
+    <select id="projects" parameterType="java.util.HashMap" resultMap="JobProject">
 		SELECT distinct(job_project) as job_project
 		FROM job_info AS t
 		WHERE  job_project IS NOT NULL
 		ORDER BY job_project ASC
 	</select>
 
-	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
-		SELECT count(1)
-		FROM job_info AS t
-		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobGroup gt 0">
-				AND t.job_group = #{jobGroup}
-			</if>
+    <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM job_info AS t
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="jobGroup gt 0">
+                AND t.job_group = #{jobGroup}
+            </if>
             <if test="triggerStatus gte 0">
                 AND t.trigger_status = #{triggerStatus}
             </if>
-			<if test="jobDesc != null and jobDesc != ''">
-				AND t.job_desc like CONCAT(CONCAT('%', #{jobDesc}), '%')
-			</if>
-			<if test="glueType != null and glueType != ''">
-				AND t.glue_type like CONCAT(CONCAT('%', #{glueType}), '%')
-			</if>
-			<if test="authors != null">
-				AND 1=1 AND
-				<foreach collection="authors" index="index" item="author" open="(" close=")" separator=" OR ">
-					FIND_IN_SET(#{author},t.author)
-				</foreach>
-			</if>
-			<if test="jobProjects != null">
-				AND t.job_project IN
-				<foreach collection="jobProjects" item="jobProject" index="index" open="(" close=")" separator=",">
-					#{jobProject}
-				</foreach>
-			</if>
-		</trim>
-	</select>
+            <if test="jobDesc != null and jobDesc != ''">
+                AND t.job_desc like CONCAT(CONCAT('%', #{jobDesc}), '%')
+            </if>
+            <if test="glueType != null and glueType != ''">
+                AND t.glue_type like CONCAT(CONCAT('%', #{glueType}), '%')
+            </if>
+            <if test="authors != null">
+                AND 1=1 AND
+                <foreach collection="authors" index="index" item="author" open="(" close=")" separator=" OR ">
+                    FIND_IN_SET(#{author},t.author)
+                </foreach>
+            </if>
+            <if test="jobProjects != null">
+                AND t.job_project IN
+                <foreach collection="jobProjects" item="jobProject" index="index" open="(" close=")" separator=",">
+                    #{jobProject}
+                </foreach>
+            </if>
+        </trim>
+    </select>
 
-	<insert id="save" parameterType="com.wugui.datax.admin.entity.JobInfo" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO job_info (
-			job_group,
-			job_cron,
-			job_desc,
-			add_time,
-			update_time,
-			author,
-			alarm_email,
-            executor_route_strategy,
-			executor_handler,
-			executor_param,
-			executor_block_strategy,
-			executor_timeout,
-			executor_fail_retry_count,
-			glue_type,
-			glue_source,
-			glue_remark,
-			glue_updatetime,
-			child_jobid,
-			trigger_status,
-			trigger_last_time,
-			trigger_next_time,
-			job_json,
-			replace_param,
-			jvm_param,
-			inc_start_time,
-			partition_info,
-			last_handle_code,
-			parent_jobid,
-		replace_param_type,
-		job_project
-		) VALUES (
-			#{jobGroup},
-			#{jobCron},
-			#{jobDesc},
-			#{addTime},
-			#{updateTime},
-			#{author},
-			#{alarmEmail},
-			#{executorRouteStrategy},
-			#{executorHandler},
-			#{executorParam},
-			#{executorBlockStrategy},
-			#{executorTimeout},
-			#{executorFailRetryCount},
-			#{glueType},
-			#{glueSource},
-			#{glueRemark},
-			#{glueUpdatetime},
-			#{childJobId},
-			#{triggerStatus},
-			#{triggerLastTime},
-			#{triggerNextTime},
-			#{jobJson},
-			#{replaceParam},
-			#{jvmParam},
-			#{incStartTime},
-			#{partitionInfo},
-			#{lastHandleCode},
-			#{parentJobId},
-			#{replaceParamType},
-			#{jobProject}
-		);
-		<!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-			SELECT LAST_INSERT_ID()
-			/*SELECT @@IDENTITY AS id*/
-		</selectKey>-->
-	</insert>
+    <insert id="save" parameterType="com.wugui.datax.admin.entity.JobInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO job_info (
+        job_group,
+        job_cron,
+        job_desc,
+        add_time,
+        update_time,
+        author,
+        alarm_email,
+        executor_route_strategy,
+        executor_handler,
+        executor_param,
+        executor_block_strategy,
+        executor_timeout,
+        executor_fail_retry_count,
+        glue_type,
+        glue_source,
+        glue_remark,
+        glue_updatetime,
+        child_jobid,
+        trigger_status,
+        trigger_last_time,
+        trigger_next_time,
+        job_json,
+        replace_param,
+        jvm_param,
+        inc_start_time,
+        partition_info,
+        last_handle_code,
+        parent_jobid,
+        replace_param_type,
+        job_project
+        ) VALUES (
+        #{jobGroup},
+        #{jobCron},
+        #{jobDesc},
+        #{addTime},
+        #{updateTime},
+        #{author},
+        #{alarmEmail},
+        #{executorRouteStrategy},
+        #{executorHandler},
+        #{executorParam},
+        #{executorBlockStrategy},
+        #{executorTimeout},
+        #{executorFailRetryCount},
+        #{glueType},
+        #{glueSource},
+        #{glueRemark},
+        #{glueUpdatetime},
+        #{childJobId},
+        #{triggerStatus},
+        #{triggerLastTime},
+        #{triggerNextTime},
+        #{jobJson},
+        #{replaceParam},
+        #{jvmParam},
+        #{incStartTime},
+        #{partitionInfo},
+        #{lastHandleCode},
+        #{parentJobId},
+        #{replaceParamType},
+        #{jobProject}
+        );
+        <!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+            /*SELECT @@IDENTITY AS id*/
+        </selectKey>-->
+    </insert>
 
-	<select id="loadById" parameterType="java.util.HashMap" resultMap="JobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM job_info AS t
-		WHERE t.id = #{id}
-	</select>
+    <select id="loadById" parameterType="java.util.HashMap" resultMap="JobInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM job_info AS t
+        WHERE t.id = #{id}
+    </select>
 
-	<update id="update" parameterType="com.wugui.datax.admin.entity.JobInfo" >
+    <update id="update" parameterType="com.wugui.datax.admin.entity.JobInfo">
 		UPDATE job_info
 		SET
 			job_group = #{jobGroup},
@@ -271,34 +277,36 @@
 		WHERE id = #{id}
 	</update>
 
-	<delete id="delete" parameterType="java.util.HashMap">
+    <delete id="delete" parameterType="java.util.HashMap">
 		DELETE
 		FROM job_info
 		WHERE id = #{id}
 	</delete>
 
-	<select id="getJobsByGroup" parameterType="java.util.HashMap" resultMap="JobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM job_info AS t
-		WHERE t.job_group = #{jobGroup}
-	</select>
+    <select id="getJobsByGroup" parameterType="java.util.HashMap" resultMap="JobInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM job_info AS t
+        WHERE t.job_group = #{jobGroup}
+    </select>
 
-	<select id="findAllCount" resultType="int">
+    <select id="findAllCount" resultType="int">
 		SELECT count(1)
 		FROM job_info
 	</select>
 
 
-	<select id="scheduleJobQuery" parameterType="java.util.HashMap" resultMap="JobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM job_info AS t
-		WHERE t.trigger_status = 1
-			and t.trigger_next_time <![CDATA[ <= ]]> #{maxNextTime}
-		ORDER BY id ASC
-		LIMIT #{pagesize}
-	</select>
+    <select id="scheduleJobQuery" parameterType="java.util.HashMap" resultMap="JobInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM job_info AS t
+        WHERE t.trigger_status = 1
+        and t.trigger_next_time <![CDATA[ <= ]]> #{maxNextTime}
+        ORDER BY id ASC
+        LIMIT #{pagesize}
+    </select>
 
-	<update id="scheduleUpdate" parameterType="com.wugui.datax.admin.entity.JobInfo"  >
+    <update id="scheduleUpdate" parameterType="com.wugui.datax.admin.entity.JobInfo">
 		UPDATE job_info
 		SET
 			trigger_last_time = #{triggerLastTime},
@@ -307,14 +315,14 @@
 		WHERE id = #{id}
 	</update>
 
-	<update id="incrementTimeUpdate" parameterType="java.util.HashMap">
+    <update id="incrementTimeUpdate" parameterType="java.util.HashMap">
 		UPDATE job_info
 		SET
 			inc_start_time = #{incStartTime}
 		WHERE id = #{id}
 	</update>
 
-	<update id="updateLastHandleCode" parameterType="java.util.HashMap">
+    <update id="updateLastHandleCode" parameterType="java.util.HashMap">
 		UPDATE job_info
 		SET
 			last_handle_code = #{lastHandleCode}

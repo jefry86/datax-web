@@ -1,8 +1,11 @@
 package com.wugui.datax.admin.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wugui.datax.admin.entity.JobUser;
+import com.wugui.datax.admin.entity.JwtUser;
 import com.wugui.datax.admin.exception.TokenIsExpiredException;
 import com.wugui.datax.admin.util.JwtTokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +23,9 @@ import java.util.Collections;
  * Created by jingwk on 2019/11/17
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+    @Autowired
+    private JobUser jobUser;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -60,8 +66,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         } else {
             String username = JwtTokenUtils.getUsername(token);
             String role = JwtTokenUtils.getUserRole(token);
+            String id = JwtTokenUtils.getId(token);
             if (username != null) {
-                return new UsernamePasswordAuthenticationToken(username, null,
+                return new UsernamePasswordAuthenticationToken(username, id,
                         Collections.singleton(new SimpleGrantedAuthority(role))
                 );
             }

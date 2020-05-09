@@ -29,7 +29,7 @@ public class JwtTokenUtils {
     private static final long EXPIRATION_REMEMBER = 7 * EXPIRATION;
 
     // 创建token
-    public static String createToken(String username, String role, boolean isRememberMe) {
+    public static String createToken(int id, String username, String role, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         HashMap<String, Object> map = new HashMap<>();
         map.put(ROLE_CLAIMS, role);
@@ -37,6 +37,7 @@ public class JwtTokenUtils {
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .setClaims(map)
                 .setIssuer(ISS)
+                .setId(String.valueOf(id))
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
@@ -46,6 +47,10 @@ public class JwtTokenUtils {
     // 从token中获取用户名
     public static String getUsername(String token) {
         return getTokenBody(token).getSubject();
+    }
+
+    public static String getId(String token) {
+        return getTokenBody(token).getId();
     }
 
     // 获取用户角色
