@@ -53,7 +53,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), new ArrayList<>())
             );
         } catch (IOException e) {
-            logger.error("attemptAuthentication error :{}",e);
+            logger.error("attemptAuthentication error :{}", e);
             return null;
         }
     }
@@ -71,11 +71,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String role = "";
         Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
-        for (GrantedAuthority authority : authorities){
+        for (GrantedAuthority authority : authorities) {
             role = authority.getAuthority();
         }
 
-        String token = JwtTokenUtils.createToken(jwtUser.getUsername(), role, isRemember);
+        String token = JwtTokenUtils.createToken(jwtUser.getId(), jwtUser.getUsername(), role, isRemember);
         response.setHeader("token", JwtTokenUtils.TOKEN_PREFIX + token);
         response.setCharacterEncoding("UTF-8");
         Map<String, Object> maps = new HashMap<>();
@@ -87,6 +87,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(JSON.toJSON(new ReturnT<>(ReturnT.FAIL_CODE,I18nUtil.getString("login_param_unvalid"))).toString());
+        response.getWriter().write(JSON.toJSON(new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("login_param_unvalid"))).toString());
     }
 }

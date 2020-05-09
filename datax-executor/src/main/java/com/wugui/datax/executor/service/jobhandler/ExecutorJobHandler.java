@@ -42,6 +42,7 @@ public class ExecutorJobHandler extends IJobHandler {
     @Value("${datax.pypath}")
     private String dataXPyPath;
 
+
     @Override
     public ReturnT<String> execute(TriggerParam trigger) {
         int exitValue = -1;
@@ -52,7 +53,9 @@ public class ExecutorJobHandler extends IJobHandler {
         tmpFilePath = generateTemJsonFile(trigger.getJobJson());
         try {
             String[] cmdarrayFinal = buildCmd(trigger, tmpFilePath);
+            Long currentTime = System.currentTimeMillis();
             final Process process = Runtime.getRuntime().exec(cmdarrayFinal);
+            this.expTime = System.currentTimeMillis() - currentTime;
             String prcsId = ProcessUtil.getProcessId(process);
             JobLogger.log("------------------DataX运行进程Id: " + prcsId);
             jobTmpFiles.put(prcsId, tmpFilePath);
@@ -62,14 +65,14 @@ public class ExecutorJobHandler extends IJobHandler {
             // log-thread
             inputThread = new Thread(() -> {
                 try {
-                    reader(new BufferedInputStream(process.getInputStream()));
+                    com.wugui.datatx.core.util.FileUtil.reader(new BufferedInputStream(process.getInputStream()), "stdout:");
                 } catch (IOException e) {
                     JobLogger.log(e);
                 }
             });
             errThread = new Thread(() -> {
                 try {
-                    reader(new BufferedInputStream(process.getErrorStream()));
+                    com.wugui.datatx.core.util.FileUtil.reader(new BufferedInputStream(process.getErrorStream()), "stderr:");
                 } catch (IOException e) {
                     JobLogger.log(e);
                 }
@@ -90,10 +93,13 @@ public class ExecutorJobHandler extends IJobHandler {
             if (errThread != null && errThread.isAlive()) {
                 errThread.interrupt();
             }
+
+
             //  删除临时文件
             if (FileUtil.exist(tmpFilePath)) {
                 FileUtil.del(new File(tmpFilePath));
             }
+            expTime = 0L;
         }
         if (exitValue == 0) {
             return IJobHandler.SUCCESS;
@@ -120,27 +126,6 @@ public class ExecutorJobHandler extends IJobHandler {
         return cmdArr.toArray(new String[cmdArr.size()]);
     }
 
-    /**
-     * 数据流reader（Input自动关闭，Output不处理）
-     *
-     * @param inputStream
-     * @throws IOException
-     */
-    private static void reader(InputStream inputStream) throws IOException {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                JobLogger.log(line);
-            }
-            reader.close();
-            inputStream = null;
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-    }
 
     private String buildDataXParam(TriggerParam tgParam) {
         StringBuilder doc = new StringBuilder();
@@ -153,7 +138,7 @@ public class ExecutorJobHandler extends IJobHandler {
         if (StringUtils.isNotBlank(tgParam.getReplaceParam())) {
             if (doc.length() > 0) doc.append(DataxOption.SPLIT_SPACE);
 
-            if (tgParam.getReplaceParamType()==null ||tgParam.getReplaceParamType().isEmpty() || tgParam.getReplaceParamType().equals("UnitTime")) {
+            if (tgParam.getReplaceParamType() == null || tgParam.getReplaceParamType().isEmpty() || tgParam.getReplaceParamType().equals("UnitTime")) {
                 long tgSecondTime = tgParam.getTriggerTime().getTime() / 1000;
                 long lastTime = tgParam.getStartTime().getTime() / 1000;
                 doc.append(DataxOption.PARAMS_CM).append(DataxOption.TRANSFORM_QUOTES).append(String.format(tgParam.getReplaceParam(), lastTime, tgSecondTime));

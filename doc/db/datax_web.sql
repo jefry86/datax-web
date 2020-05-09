@@ -367,3 +367,7 @@ ADD COLUMN `job_project` varchar(255) NULL COMMENT '所属项目' AFTER `job_des
 ALTER TABLE `job_template`
 ADD COLUMN `job_project` varchar(255) NULL COMMENT '所属项目' AFTER `parent_jobid`;
 
+
+ALTER TABLE `job_log`
+ADD COLUMN `exp_time` int(0) NULL DEFAULT 0 COMMENT '消耗时间' AFTER `process_id`;
+

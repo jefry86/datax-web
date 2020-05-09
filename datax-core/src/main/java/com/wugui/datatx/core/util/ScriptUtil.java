@@ -3,12 +3,11 @@ package com.wugui.datatx.core.util;
 
 import com.wugui.datatx.core.log.JobLogger;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * 1、内嵌编译器如"PythonInterpreter"无法引用扩展包，因此推荐使用java调用控制台进程方式"Runtime.getRuntime().exec()"来运行脚本(shell或python)；
@@ -18,7 +17,18 @@ import java.util.List;
  * <p>
  * Created by xuxueli on 17/2/25.
  */
+
 public class ScriptUtil {
+
+    public Long getExpTime() {
+        return expTime;
+    }
+
+    public void setExpTime(Long expTime) {
+        this.expTime = expTime;
+    }
+
+    private Long expTime;
 
     /**
      * make script file
@@ -27,7 +37,7 @@ public class ScriptUtil {
      * @param content
      * @throws IOException
      */
-    public static void markScriptFile(String scriptFileName, String content) throws IOException {
+    public void markScriptFile(String scriptFileName, String content) throws IOException {
         // make file,   filePath/gluesource/666-123456789.py
         FileOutputStream fileOutputStream = null;
         try {
@@ -52,8 +62,7 @@ public class ScriptUtil {
      * @param params
      * @return
      */
-    public static int execToFile(String command, String scriptFile, String logFile, String... params) {
-
+    public int execToFile(String command, String scriptFile, String logFile, String... params) {
         FileOutputStream fileOutputStream = null;
         Thread inputThread = null;
         Thread errThread = null;
@@ -73,22 +82,24 @@ public class ScriptUtil {
             String[] cmdarrayFinal = cmdarray.toArray(new String[cmdarray.size()]);
 
             // process-exec
+            Long currentTime = System.currentTimeMillis();
             final Process process = Runtime.getRuntime().exec(cmdarrayFinal);
+            this.expTime = System.currentTimeMillis() - currentTime;
 
             // log-thread
             final FileOutputStream finalFileOutputStream = fileOutputStream;
             inputThread = new Thread(() -> {
                 try {
-                    copy(process.getInputStream(), finalFileOutputStream, new byte[1024]);
-                } catch (IOException e) {
-                    JobLogger.log(e);
+                    FileUtil.reader(process.getInputStream(), "stdout:");
+                } catch (IOException ioException) {
+                    JobLogger.log(ioException);
                 }
             });
             errThread = new Thread(() -> {
                 try {
-                    copy(process.getErrorStream(), finalFileOutputStream, new byte[1024]);
-                } catch (IOException e) {
-                    JobLogger.log(e);
+                    FileUtil.reader(process.getErrorStream(), "stderr:");
+                } catch (IOException ioException) {
+                    JobLogger.log(ioException);
                 }
             });
             inputThread.start();
@@ -103,14 +114,15 @@ public class ScriptUtil {
 
             return exitValue;
         } catch (Exception e) {
-            JobLogger.log(e);
+            JobLogger.log("----------- 执行异常：" + e + "-------------");
             return -1;
         } finally {
+            expTime = 0L;
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    JobLogger.log(e);
+                    JobLogger.log("----------- 执行异常：" + e + "-------------");
                 }
 
             }

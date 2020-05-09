@@ -26,7 +26,7 @@
 		<result column="alarm_status" property="alarmStatus" />
 
 		<result column="process_id" property="processId" />
-		<result column="expend_time" property="expendTime" />
+		<result column="exp_time" property="expTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -46,7 +46,7 @@
 		t.handle_msg,
 		t.alarm_status,
 		t.process_id,
-		t.expend_time
+		t.exp_time
 	</sql>
 	
 	<select id="pageList" resultMap="JobLog">
@@ -152,7 +152,6 @@
 			`executor_param`= #{executorParam},
 			`executor_sharding_param`= #{executorShardingParam},
 			`executor_fail_retry_count`= #{executorFailRetryCount}
-			`expend_time`= #{expendTime}
 		WHERE `id`= #{id}
 	</update>
 
@@ -161,7 +160,8 @@
 		SET 
 			`handle_time`= #{handleTime}, 
 			`handle_code`= #{handleCode},
-			`handle_msg`= #{handleMsg} 
+			`handle_msg`= #{handleMsg},
+			`exp_time`=#{expTime}
 		WHERE `id`= #{id}
 	</update>
 

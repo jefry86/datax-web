@@ -28,7 +28,7 @@ public interface JobService {
      */
     Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, String author,String jobProject);
 
-    List<Object> list();
+    List<Object> list(int permissionId);
 
     List<Object> projects();
 

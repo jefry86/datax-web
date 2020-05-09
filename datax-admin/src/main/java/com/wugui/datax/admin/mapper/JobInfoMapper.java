@@ -34,7 +34,7 @@ public interface JobInfoMapper {
                       @Param("authors") String[] authors,
                       @Param("jobProjects") String[] jobProjects);
 
-    List<Object> findAll();
+    List<Object> findAll(int permissionId);
 
     List<Object> projects();
 

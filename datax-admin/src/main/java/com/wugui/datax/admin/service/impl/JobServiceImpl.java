@@ -10,14 +10,15 @@ import com.wugui.datax.admin.core.route.ExecutorRouteStrategyEnum;
 import com.wugui.datax.admin.core.thread.JobScheduleHelper;
 import com.wugui.datax.admin.core.util.I18nUtil;
 import com.wugui.datax.admin.dto.TaskScheduleDto;
-import com.wugui.datax.admin.entity.JobGroup;
-import com.wugui.datax.admin.entity.JobInfo;
-import com.wugui.datax.admin.entity.JobLogReport;
+import com.wugui.datax.admin.entity.*;
 import com.wugui.datax.admin.mapper.*;
 import com.wugui.datax.admin.service.JobService;
 import com.wugui.datax.admin.util.CronUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -44,6 +45,8 @@ public class JobServiceImpl implements JobService {
     private JobLogGlueMapper jobLogGlueMapper;
     @Resource
     private JobLogReportMapper jobLogReportMapper;
+    private JobUser jobUser;
+
 
     @Override
     public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, String author, String jobProject) {
@@ -55,6 +58,15 @@ public class JobServiceImpl implements JobService {
         }
         if (jobProject != null && !jobProject.isEmpty()) {
             jobProjects = jobProject.split(",");
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = (String) authentication.getCredentials();
+        String permissionId = String.valueOf(JobUser.getPermissionId(id));
+        if (authors != null && !permissionId.equals("0")) {
+            Arrays.fill(authors, permissionId);
+        } else if (authors == null && !permissionId.equals("0")) {
+            authors = permissionId.split(",");
         }
 
 
@@ -70,8 +82,8 @@ public class JobServiceImpl implements JobService {
         return maps;
     }
 
-    public List<Object> list() {
-        return jobInfoMapper.findAll();
+    public List<Object> list(int permissionId) {
+        return jobInfoMapper.findAll(permissionId);
     }
 
     public List<Object> projects() {

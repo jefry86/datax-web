@@ -21,7 +21,7 @@ public class ScriptJobHandler extends IJobHandler {
     private String gluesource;
     private GlueTypeEnum glueType;
 
-    public ScriptJobHandler(int jobId, long glueUpdatetime, String gluesource, GlueTypeEnum glueType){
+    public ScriptJobHandler(int jobId, long glueUpdatetime, String gluesource, GlueTypeEnum glueType) {
         this.jobId = jobId;
         this.glueUpdatetime = glueUpdatetime;
         this.gluesource = gluesource;
@@ -31,9 +31,9 @@ public class ScriptJobHandler extends IJobHandler {
         File glueSrcPath = new File(JobFileAppender.getGlueSrcPath());
         if (glueSrcPath.exists()) {
             File[] glueSrcFileList = glueSrcPath.listFiles();
-            if (glueSrcFileList!=null && glueSrcFileList.length>0) {
+            if (glueSrcFileList != null && glueSrcFileList.length > 0) {
                 for (File glueSrcFileItem : glueSrcFileList) {
-                    if (glueSrcFileItem.getName().startsWith(jobId +"_")) {
+                    if (glueSrcFileItem.getName().startsWith(jobId + "_")) {
                         glueSrcFileItem.delete();
                     }
                 }
@@ -64,8 +64,10 @@ public class ScriptJobHandler extends IJobHandler {
                 .concat(String.valueOf(glueUpdatetime))
                 .concat(glueType.getSuffix());
         File scriptFile = new File(scriptFileName);
+        ScriptUtil scriptUtil = new ScriptUtil();
+
         if (!scriptFile.exists()) {
-            ScriptUtil.markScriptFile(scriptFileName, gluesource);
+            scriptUtil.markScriptFile(scriptFileName, gluesource);
         }
 
         // log file
@@ -79,8 +81,12 @@ public class ScriptJobHandler extends IJobHandler {
         scriptParams[2] = String.valueOf(shardingVO.getTotal());
 
         // invoke
-        JobLogger.log("----------- script file:"+ scriptFileName +" -----------");
-        int exitValue = ScriptUtil.execToFile(cmd, scriptFileName, logFileName, scriptParams);
+        JobLogger.log("----------- script file:" + scriptFileName + " -----------");
+        int exitValue = scriptUtil.execToFile(cmd, scriptFileName, logFileName, scriptParams);
+        expTime = scriptUtil.getExpTime();
+
+
+        JobLogger.log("----------- 执行脚本消耗时间:" + expTime/1000.0 + "s -------");
 
         if (exitValue == 0) {
             return IJobHandler.SUCCESS;
