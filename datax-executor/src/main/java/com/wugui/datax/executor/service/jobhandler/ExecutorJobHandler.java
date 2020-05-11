@@ -55,7 +55,6 @@ public class ExecutorJobHandler extends IJobHandler {
             String[] cmdarrayFinal = buildCmd(trigger, tmpFilePath);
             Long currentTime = System.currentTimeMillis();
             final Process process = Runtime.getRuntime().exec(cmdarrayFinal);
-            this.expTime = System.currentTimeMillis() - currentTime;
             String prcsId = ProcessUtil.getProcessId(process);
             JobLogger.log("------------------DataX运行进程Id: " + prcsId);
             jobTmpFiles.put(prcsId, tmpFilePath);
@@ -84,6 +83,8 @@ public class ExecutorJobHandler extends IJobHandler {
             // log-thread join
             inputThread.join();
             errThread.join();
+            expTime = System.currentTimeMillis() - currentTime;
+
         } catch (Exception e) {
             JobLogger.log(e);
         } finally {
@@ -99,7 +100,6 @@ public class ExecutorJobHandler extends IJobHandler {
             if (FileUtil.exist(tmpFilePath)) {
                 FileUtil.del(new File(tmpFilePath));
             }
-            expTime = 0L;
         }
         if (exitValue == 0) {
             return IJobHandler.SUCCESS;

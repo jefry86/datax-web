@@ -29,7 +29,7 @@ public class JobApiController {
 
 
     /**
-     * callback
+     * 回调
      *
      * @param data
      * @return

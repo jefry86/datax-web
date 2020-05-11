@@ -41,6 +41,7 @@ public class JobTemplateController {
     }
 
     @GetMapping("/list")
+    @ApiOperation("任务列表")
     public ReturnT<List<JobTemplate>> list(){
         return new ReturnT<>(xxlJobTemplateService.findAll());
     }

@@ -23,7 +23,7 @@ public abstract class IJobHandler {
 
 	public static final ConcurrentMap<String, String> jobTmpFiles = new ConcurrentHashMap<>();
 
-	public Long expTime;
+	public Long expTime =0L;
 	/**
 	 * execute handler, invoked when executor receives a scheduling request
 	 *

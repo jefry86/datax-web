@@ -4,8 +4,11 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wugui.datatx.core.biz.model.ReturnT;
 import com.wugui.datax.admin.core.util.I18nUtil;
+import com.wugui.datax.admin.dto.UserLogsDto;
 import com.wugui.datax.admin.entity.JobUser;
+import com.wugui.datax.admin.entity.JobUserLogs;
 import com.wugui.datax.admin.mapper.JobUserMapper;
+import com.wugui.datax.admin.service.impl.JobUserLogsImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,9 @@ public class UserController {
 
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Resource
+    private JobUserLogsImpl jobUserLogsImpl;
 
 
     @GetMapping("/pageList")
@@ -145,6 +152,15 @@ public class UserController {
         existUser.setPassword(bCryptPasswordEncoder.encode(password));
         jobUserMapper.update(existUser);
         return ReturnT.SUCCESS;
+    }
+
+    @PostMapping("/logs")
+    @ApiOperation("操作日志列表")
+    public ReturnT<Map<String, Object>> userLogs(@RequestBody UserLogsDto userLogsDto) {
+        int current = userLogsDto.getCurrent();
+        int size =userLogsDto.getSize();
+        String[] dateTime = userLogsDto.getDateTime();
+        return new ReturnT<>(jobUserLogsImpl.pageList(current, size, dateTime));
     }
 
 }
