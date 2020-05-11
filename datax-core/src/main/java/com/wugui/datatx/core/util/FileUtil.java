@@ -184,10 +184,11 @@ public class FileUtil {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
-            JobLogger.log("------------------" + std + "\n\t");
+            StringBuilder logs = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                JobLogger.log(line);
+                logs.append(line+"\n\t");
             }
+            JobLogger.log("------------------" + std + "\n\t" + logs.toString());
             reader.close();
             inputStream = null;
         } finally {

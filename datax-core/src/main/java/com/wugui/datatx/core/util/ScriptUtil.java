@@ -28,7 +28,7 @@ public class ScriptUtil {
         this.expTime = expTime;
     }
 
-    private Long expTime;
+    private Long expTime=0L;
 
     /**
      * make script file
@@ -84,7 +84,6 @@ public class ScriptUtil {
             // process-exec
             Long currentTime = System.currentTimeMillis();
             final Process process = Runtime.getRuntime().exec(cmdarrayFinal);
-            this.expTime = System.currentTimeMillis() - currentTime;
 
             // log-thread
             final FileOutputStream finalFileOutputStream = fileOutputStream;
@@ -112,12 +111,13 @@ public class ScriptUtil {
             inputThread.join();
             errThread.join();
 
+            expTime = System.currentTimeMillis() - currentTime;
+
             return exitValue;
         } catch (Exception e) {
             JobLogger.log("----------- 执行异常：" + e + "-------------");
             return -1;
         } finally {
-            expTime = 0L;
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();

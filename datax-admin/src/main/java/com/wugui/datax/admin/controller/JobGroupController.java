@@ -31,7 +31,7 @@ public class JobGroupController {
     @Resource
     private JobRegistryMapper jobRegistryMapper;
 
-    @GetMapping("/list")
+    @GetMapping(path = "/list",name = "执行器列表")
     @ApiOperation("执行器列表")
     public ReturnT<List<JobGroup>> getExecutorList() {
         return new ReturnT<>(jobGroupMapper.findAll());

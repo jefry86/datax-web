@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wugui.datax.admin.mapper.JobUserLogsMapper">
+    <resultMap id="JobUser" type="com.wugui.datax.admin.entity.JobUserLogs" >
+        <result column="id" property="id" />
+        <result column="uid" property="uid" />
+        <result column="uri" property="uri" />
+        <result column="params" property="params" />
+        <result column="desc" property="desc" />
+        <result column="dt_create" property="dtCreate"/>
+        <result column="dt_update" property="dtUpdate"/>
+        <result column="status" property="status"/>
+        <result column="nickname" property="nickname"/>
+        <result column="fdtcreate" property="fdtcreate"/>
+    </resultMap>
+
+    <select id="pageList" parameterType="java.util.HashMap" resultMap="JobUser">
+        SELECT
+        t.id,
+        t.uid,
+        t.uri,
+        t.params,
+        t.desc,
+        FROM_UNIXTIME(t.dt_create) as fdtcreate,
+        t.dt_update,
+        t.status,
+        p.nickname
+        FROM job_user_logs AS t LEFT JOIN
+        job_user AS p on t.uid=p.id
+        <trim prefix="WHERE" prefixOverrides="AND | OR" >
+            <if test="start_time >0">
+                AND t.dt_create>=#{start_time}
+            </if>
+            <if test="end_time >0">
+                AND t.dt_create gt #{start_time}
+            </if>
+        </trim>
+        ORDER BY id desc
+        LIMIT #{offset}, #{pagesize}
+    </select>
+
+    <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM job_user_logs AS t
+        <trim prefix="WHERE" prefixOverrides="AND | OR" >
+            <if test="start_time >0">
+                AND t.dt_create >= #{start_time}
+            </if>
+            <if test="end_time >0">
+                AND t.dt_create gt #{start_time}
+            </if>
+        </trim>
+    </select>
+
+
+    <insert id="save" parameterType="com.wugui.datax.admin.entity.JobUserLogs" useGeneratedKeys="true" keyProperty="id" >
+		INSERT INTO job_user_logs (
+			uid,
+			`uri`,
+			params,
+			`desc`,
+			dt_create,
+			dt_update,
+			status
+		) VALUES (
+			#{uid},
+			#{uri},
+			#{params},
+			#{desc},
+			#{dtCreate},
+			#{dtUpdate},
+			#{status}
+		);
+	</insert>
+
+</mapper>
