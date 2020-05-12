@@ -28,13 +28,13 @@ public class IndexController {
 
 
     @GetMapping("/index")
-    @ApiOperation("监控图")
+    @ApiOperation("查看监控图")
     public ReturnT<Map<String, Object>> index() {
         return new ReturnT<>(jobService.dashboardInfo());
     }
 
     @PostMapping("/chartInfo")
-    @ApiOperation("图表信息")
+    @ApiOperation("查看图表信息")
     public ReturnT<Map<String, Object>> chartInfo() {
         return jobService.chartInfo();
     }

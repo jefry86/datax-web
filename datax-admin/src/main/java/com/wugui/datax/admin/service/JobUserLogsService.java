@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface JobUserLogsService {
-    Map<String, Object> pageList(int start, int length, String[] dateTime);
+    Map<String, Object> pageList(int start, int length, String nickname,String[] dateTime);
 
     ReturnT<String> add(JobUserLogs jobUserLogs);
 }

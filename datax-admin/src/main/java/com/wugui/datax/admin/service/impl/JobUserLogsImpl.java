@@ -21,11 +21,11 @@ public class JobUserLogsImpl implements JobUserLogsService {
     private JobUserLogsMapper jobUserLogsMapper;
 
     @Override
-    public Map<String, Object> pageList(int start, int length,String[] dateTime) {
+    public Map<String, Object> pageList(int start, int length, String nickname, String[] dateTime) {
 
         int startTime = 0;
         int endTime = 0;
-        if (dateTime != null && dateTime.length>0) {
+        if (dateTime != null && dateTime.length > 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 Date startDate = simpleDateFormat.parse(dateTime[0]);
@@ -38,8 +38,8 @@ public class JobUserLogsImpl implements JobUserLogsService {
             }
         }
 
-        List<JobUserLogs> list = jobUserLogsMapper.pageList(start, length, startTime, endTime);
-        int recordsTotal = jobUserLogsMapper.pageListCount(start, length, startTime, endTime);
+        List<JobUserLogs> list = jobUserLogsMapper.pageList(start, length, nickname, startTime, endTime);
+        int recordsTotal = jobUserLogsMapper.pageListCount(start, length, nickname, startTime, endTime);
 
         // package result
         Map<String, Object> maps = new HashMap<>();

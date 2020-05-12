@@ -13,11 +13,13 @@ import java.util.List;
 public interface JobUserLogsMapper {
     List<JobUserLogs> pageList(@Param("offset") int offset,
                                @Param("pagesize") int pagesize,
+                               @Param("nickname") String nickname,
                                @Param("start_time") int startTime,
                                @Param("end_time") int endTime);
 
     int pageListCount(@Param("offset") int offset,
                       @Param("pagesize") int pagesize,
+                      @Param("nickname") String nickname,
                       @Param("start_time") int startTime,
                       @Param("end_time") int endTime);
 

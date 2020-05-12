@@ -40,7 +40,7 @@ public class JobInfoController {
     private JobService jobService;
 
     @GetMapping("/pageList")
-    @ApiOperation("任务列表分页")
+    @ApiOperation("查看任务列表分页")
     public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "0") int current,
                                                  @RequestParam(required = false, defaultValue = "10") int size,
                                                  int jobGroup, int triggerStatus, String jobDesc, String glueType, String author, String jobProject) {
@@ -48,7 +48,7 @@ public class JobInfoController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("任务列表")
+    @ApiOperation("查看任务列表")
     public ReturnT<List<Object>> list(Authentication authentication) {
         String id = (String) authentication.getCredentials();
         int permissionId = JobUser.getPermissionId(id);

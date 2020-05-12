@@ -38,7 +38,7 @@ public class JobLogController {
     public JobLogMapper jobLogMapper;
 
     @GetMapping("/pageList")
-    @ApiOperation("运行日志列表")
+    @ApiOperation("查看运行日志列表")
     public ReturnT<Map<String, Object>> pageList(
             @RequestParam(required = false, defaultValue = "0") int current,
             @RequestParam(required = false, defaultValue = "10") int size,
@@ -71,7 +71,7 @@ public class JobLogController {
     }
 
     @RequestMapping(value = "/logDetailCat", method = RequestMethod.GET)
-    @ApiOperation("运行日志详情")
+    @ApiOperation("查看运行日志详情")
     public ReturnT<LogResult> logDetailCat(String executorAddress, long triggerTime, long logId, int fromLineNum) {
         try {
             ExecutorBiz executorBiz = JobScheduler.getExecutorBiz(executorAddress);
