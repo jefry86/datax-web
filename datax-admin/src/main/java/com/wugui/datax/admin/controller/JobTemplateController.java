@@ -32,7 +32,7 @@ public class JobTemplateController {
     private JobTemplateService xxlJobTemplateService;
 
     @GetMapping("/pageList")
-    @ApiOperation("任务列表")
+    @ApiOperation("查看任务列表")
     public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "0") int current,
                                         @RequestParam(required = false, defaultValue = "10") int size,
                                         int jobGroup, String jobDesc, String executorHandler, String author) {
@@ -41,7 +41,7 @@ public class JobTemplateController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("任务列表")
+    @ApiOperation("获取任务列表")
     public ReturnT<List<JobTemplate>> list(){
         return new ReturnT<>(xxlJobTemplateService.findAll());
     }

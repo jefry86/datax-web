@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("用户列表")
+    @ApiOperation("查看用户列表")
     public ReturnT<List<JobUser>> list(String username) {
 
         // page list
@@ -155,12 +155,12 @@ public class UserController {
     }
 
     @PostMapping("/logs")
-    @ApiOperation("操作日志列表")
-    public ReturnT<Map<String, Object>> userLogs(@RequestBody UserLogsDto userLogsDto) {
-        int current = userLogsDto.getCurrent();
-        int size =userLogsDto.getSize();
-        String[] dateTime = userLogsDto.getDateTime();
-        return new ReturnT<>(jobUserLogsImpl.pageList(current, size, dateTime));
+    @ApiOperation("查看操作日志列表")
+    public ReturnT<Map<String, Object>> userLogs(@RequestParam(required = false, defaultValue = "1") int current,
+                                                 @RequestParam(required = false, defaultValue = "10") int size,
+                                                 @RequestParam(name = "dateTime[]",required = false) String[] dateTime,
+                                                 @RequestParam(required = false) String nickname) {
+        return new ReturnT<>(jobUserLogsImpl.pageList(current, size, nickname,dateTime));
     }
 
 }

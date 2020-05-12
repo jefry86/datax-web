@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wugui.datax.admin.mapper.JobUserLogsMapper">
-    <resultMap id="JobUser" type="com.wugui.datax.admin.entity.JobUserLogs" >
-        <result column="id" property="id" />
-        <result column="uid" property="uid" />
-        <result column="uri" property="uri" />
-        <result column="params" property="params" />
-        <result column="desc" property="desc" />
+    <resultMap id="JobUser" type="com.wugui.datax.admin.entity.JobUserLogs">
+        <result column="id" property="id"/>
+        <result column="uid" property="uid"/>
+        <result column="uri" property="uri"/>
+        <result column="params" property="params"/>
+        <result column="desc" property="desc"/>
         <result column="dt_create" property="dtCreate"/>
         <result column="dt_update" property="dtUpdate"/>
         <result column="status" property="status"/>
@@ -28,12 +28,15 @@
         p.nickname
         FROM job_user_logs AS t LEFT JOIN
         job_user AS p on t.uid=p.id
-        <trim prefix="WHERE" prefixOverrides="AND | OR" >
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
             <if test="start_time >0">
-                AND t.dt_create>=#{start_time}
+                AND t.dt_create &gt;= #{start_time}
             </if>
             <if test="end_time >0">
-                AND t.dt_create gt #{start_time}
+                AND t.dt_create &lt; #{end_time}
+            </if>
+            <if test="nickname!=null and nickname!=''">
+                AND p.nickname like CONCAT(CONCAT("%",#{nickname}),"%")
             </if>
         </trim>
         ORDER BY id desc
@@ -42,19 +45,23 @@
 
     <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
         SELECT count(1)
-        FROM job_user_logs AS t
+        FROM job_user_logs AS t LEFT JOIN
+        job_user AS p on t.uid=p.id
         <trim prefix="WHERE" prefixOverrides="AND | OR" >
             <if test="start_time >0">
-                AND t.dt_create >= #{start_time}
+                AND t.dt_create &gt;= #{start_time}
             </if>
             <if test="end_time >0">
-                AND t.dt_create gt #{start_time}
+                AND t.dt_create &lt; #{end_time}
+            </if>
+            <if test="nickname!=null and nickname!=''">
+                AND p.nickname like CONCAT("%",#{nickname},"%")
             </if>
         </trim>
     </select>
 
 
-    <insert id="save" parameterType="com.wugui.datax.admin.entity.JobUserLogs" useGeneratedKeys="true" keyProperty="id" >
+    <insert id="save" parameterType="com.wugui.datax.admin.entity.JobUserLogs" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO job_user_logs (
 			uid,
 			`uri`,

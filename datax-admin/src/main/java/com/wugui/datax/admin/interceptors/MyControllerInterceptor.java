@@ -44,7 +44,7 @@ public class MyControllerInterceptor implements HandlerInterceptor {
         if (params == null) {
             params = "";
         }
-        if (uri == null) {
+        if (uri == null || uid.equals("")) {
             return;
         }
 

@@ -45,7 +45,7 @@ public class JobDatasourceController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("查看分页查询所有数据")
     @ApiImplicitParams(
             {@ApiImplicitParam(paramType = "query", dataType = "String", name = "current", value = "当前页", defaultValue = "1", required = true),
                     @ApiImplicitParam(paramType = "query", dataType = "String", name = "size", value = "一页大小", defaultValue = "10", required = true),
