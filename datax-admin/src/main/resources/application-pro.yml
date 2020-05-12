@@ -1,9 +1,9 @@
 spring:
   #数据源
   datasource:
-    username: root
-    password: WCZ8klh2vURbzw9r
-    url: jdbc:mysql://10.18.97.251:3306/datax_web?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&useSSL=true&nullNamePatternMatchesAll=true&useUnicode=true&characterEncoding=UTF-8
+    username: datax_admin1
+    password: TWgWRaF6hOl5P2Z1cRXt
+    url: jdbc:mysql://10.21.33.246:15060/datax_web?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&useSSL=true&nullNamePatternMatchesAll=true&useUnicode=true&characterEncoding=UTF-8
 
 # 配置mybatis-plus打印slq日志
 logging:
