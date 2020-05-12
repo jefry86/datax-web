@@ -7,7 +7,7 @@ datax:
   job:
     admin:
       ### datax-web admin address
-      addresses: http://10.6.176.119:8080
+      addresses: http://datax-admin.uuzu.com:8080
     executor:
       appname: datax-executor
       ip:
