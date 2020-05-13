@@ -392,3 +392,13 @@ CREATE TABLE `job_permission_role`  (
   `status` tinyint NULL DEFAULT 1 COMMENT '是否可用',
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `job_role_user`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `job_user_id` int(0) NULL,
+  `job_role_id` int(0) NULL,
+  `dt_create` int(255) NULL,
+  `dt_modify` integer(255) NULL,
+  `status` tinyint NULL,
+  PRIMARY KEY (`id`)
+);
