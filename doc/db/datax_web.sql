@@ -371,3 +371,24 @@ ADD COLUMN `job_project` varchar(255) NULL COMMENT '所属项目' AFTER `parent_
 ALTER TABLE `job_log`
 ADD COLUMN `exp_time` int(0) NULL DEFAULT 0 COMMENT '消耗时间' AFTER `process_id`;
 
+CREATE TABLE `job_user_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT NULL COMMENT '用户ID',
+  `uri` varchar(255) DEFAULT NULL COMMENT '操作的uri',
+  `params` varchar(255) DEFAULT NULL COMMENT '请求的参数',
+  `desc` text COMMENT '操作说明',
+  `dt_create` int(255) DEFAULT NULL COMMENT '创建时间',
+  `dt_update` int(255) DEFAULT NULL COMMENT '更新时间',
+  `status` int(255) DEFAULT '1' COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `job_permission_role`  (
+  `id` int(0) NOT NULL,
+  `role_id` int(0) NULL COMMENT '角色ID',
+  `permission_id` int(0) NULL COMMENT '权限ID',
+  `dt_create` int NULL COMMENT '创建时间',
+  `dt_modify` int NULL COMMENT '更新时间',
+  `status` tinyint NULL DEFAULT 1 COMMENT '是否可用',
+  PRIMARY KEY (`id`)
+);

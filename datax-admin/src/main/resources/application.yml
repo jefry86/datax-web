@@ -77,11 +77,5 @@ mybatis-plus:
     jdbc-type-for-null: 'null'
     type-handlers-package: com.wugui.datax.admin.core.handler
 
-yoozoo:
-  notice:
-    base-url: http://notice.uuzu.com
-    api-key: kqYzSh=vJ*brWKUwcGV2e+0xs!5LTR
-    username: tianly
-
 swagger:
   enabled: true
